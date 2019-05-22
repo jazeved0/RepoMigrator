@@ -50,7 +50,7 @@ def clone_bare(source_repo, path, source_auth=None, timeout=DEFAULT_TIMEOUT):
     base_clone_command = """git clone {} --bare"""
     command = base_clone_command.format(source_repo)
     process = pexpect.spawn(command, cwd=path)
-    process.timeout = timeout
+    process.timeout = int(timeout)
 
     # Can fail if not valid
     result = process.expect([r"Cloning into bare repository '(.+)'[.][.][.][\n\r]+", "fatal: "])
@@ -91,7 +91,7 @@ def push_mirror(repo_path, dest_auth, remote_name, timeout=DEFAULT_TIMEOUT):
     base_push_command = """git push {} --mirror"""
     command = base_push_command.format(remote_name)
     process = pexpect.spawn(command, cwd=repo_path)
-    process.timeout = timeout
+    process.timeout = int(timeout)
 
     success_pattern = r"remote: Resolving deltas: [0-9]+% [(][0-9]+/[0-9]+[)], done[.]"
     if handle_auth(process, success_pattern, dest_auth):
