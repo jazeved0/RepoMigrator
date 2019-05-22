@@ -13,7 +13,7 @@ DEFAULT_REMOTE = "public"
 DEFAULT_TIMEOUT = 10000
 
 
-def main(source_repo, dest_repo, source_auth=None, dest_auth=None, temp_dir=None, remote=None, timeout=None):
+def migrate(source_repo, dest_repo, source_auth=None, dest_auth=None, temp_dir=None, remote=None, timeout=None):
     """Performs the migration logic from source_repo to dest_repo, creating a temporary directory (if it doesn't
     already exist) and bare cloning into that. Then, the dest repo is added as a remote to the local copy before
     pushing to that remote. Finally, the repo folder is deleted, and if the temporary directory didn't exist before,
@@ -42,7 +42,7 @@ def main(source_repo, dest_repo, source_auth=None, dest_auth=None, temp_dir=None
         else:
             shutil.rmtree(temp_path)
     except OSError as e:
-        print ("An error ocurred in cleanup. Exiting")
+        print ("An error occurred in cleanup. Exiting")
         quit()
 
 
@@ -62,7 +62,8 @@ def clone_bare(source_repo, path, source_auth=None, timeout=DEFAULT_TIMEOUT):
     print("""Attempting to clone repository "{}" """.format(repo))
 
     # Potential login stage
-    success_pattern = r"(?:Unpacking objects: [0-9]+% [(][0-9]+/[0-9]+[)], done[.])|(?:Resolving deltas: [0-9]+% [(][0-9]+/[0-9]+[)], done[.])"
+    success_pattern = (r"(?:Unpacking objects: [0-9]+% [(][0-9]+/[0-9]+[)], done[.])|(?:Resolving deltas: [0-9]+% "
+                       r"[(][0-9]+/[0-9]+[)], done[.])")
     if handle_auth(process, success_pattern, source_auth):
         repo_path = (Path(path) / repo).resolve()
         print("""Bare repository successfully cloned into "{}" """.format(repo_path))
@@ -111,9 +112,8 @@ def handle_auth(process, success_pattern, auth=None):
             print("""Authenticated for repo at "{}" """.format(server))
             result = process.expect([success_pattern, error_pattern, pexpect.EOF])
         else:
-            print("Error: Authentication required for \"{}\" but insufficient credentials were supplied"
-                .format(server))
-            exitScript(process)
+            print("Error: Authentication required for \"{}\" but insufficient credentials were supplied".format(server))
+            exit_script(process)
 
     if result == 0:
         process.expect(pexpect.EOF)
@@ -135,10 +135,10 @@ def error(process, at_eof=False):
         
     error_text = before(process)
     print(error_format.format(error_text))
-    exitScript(process)
+    exit_script(process)
 
 
-def exitScript(process=None):
+def exit_script(process=None):
     if process is not None:
         process.kill(0)
     quit()
@@ -207,7 +207,7 @@ if __name__ == "__main__":
 
     # Parse arguments
     args = parser.parse_args()
-    sourceAuth = construct_non_none_tuple(args.sourceUser, args.sourceToken)
-    destAuth   = construct_non_none_tuple(args.destUser,   args.destToken)
-    main(args.source, args.dest, source_auth=sourceAuth, dest_auth=destAuth,
-        temp_dir=args.temp, remote=args.remote, timeout=args.timeout)
+    source_auth_raw = construct_non_none_tuple(args.sourceUser, args.sourceToken)
+    dest_auth_raw   = construct_non_none_tuple(args.destUser,   args.destToken)
+    migrate(args.source, args.dest, source_auth=source_auth_raw, dest_auth=dest_auth_raw,
+            temp_dir=args.temp, remote=args.remote, timeout=args.timeout)
