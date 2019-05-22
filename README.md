@@ -6,7 +6,7 @@ Short Python scripts that assist in repository migration between Github.com and 
 
 ### `migrate.py`
 
-```shell
+```
 usage: migrate.py [-h] [--sourceUser user] [--sourceToken token]
                   [--destUser user] [--destToken token] [--temp path]
                   [--remote name] [--timeout ms]
@@ -32,7 +32,7 @@ optional arguments:
 
 ### `batch.py`
 
-```shell
+```
 usage: batch.py [-h] [--sourceUser user] [--sourceToken token] --destUser user
                 [--destToken token] [--temp path] [--remote name]
                 [--timeout ms]
