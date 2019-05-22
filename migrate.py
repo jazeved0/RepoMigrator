@@ -62,7 +62,7 @@ def clone_bare(source_repo, path, source_auth=None, timeout=DEFAULT_TIMEOUT):
     print("""Attempting to clone repository "{}" """.format(repo))
 
     # Potential login stage
-    success_pattern = r"Unpacking objects: [0-9]+% [(][0-9]+/[0-9]+[)], done[.]"
+    success_pattern = r"(?:Unpacking objects: [0-9]+% [(][0-9]+/[0-9]+[)], done[.])|(?:Resolving deltas: [0-9]+% [(][0-9]+/[0-9]+[)], done[.])"
     if handle_auth(process, success_pattern, source_auth):
         repo_path = (Path(path) / repo).resolve()
         print("""Bare repository successfully cloned into "{}" """.format(repo_path))
