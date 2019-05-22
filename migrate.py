@@ -33,7 +33,7 @@ def main(source_repo, dest_repo, source_auth=None, dest_auth=None, temp_dir=None
     temp_path, temp_existed_before = try_create_temp_dir(temp_dir)
     repo_path = clone_bare(source_repo, temp_path, source_auth, timeout=timeout)
     remote_name = add_remote(repo_path, dest_repo, remote)
-    push_mirror(repo_path, remote_name, timeout=timeout)
+    push_mirror(repo_path, dest_auth, remote_name, timeout=timeout)
 
     # Clean up
     try:
@@ -62,7 +62,7 @@ def clone_bare(source_repo, path, source_auth=None, timeout=DEFAULT_TIMEOUT):
     print("""Attempting to clone repository "{}" """.format(repo))
 
     # Potential login stage
-    success_pattern = r"(?:Unpacking objects: [0-9]+% [(][0-9]+/[0-9]+[)], done[.])|(?:Resolving deltas: [0-9]+% [(][0-9]+/[0-9]+[)], done[.])"
+    success_pattern = r"Unpacking objects: [0-9]+% [(][0-9]+/[0-9]+[)], done[.]"
     if handle_auth(process, success_pattern, source_auth):
         repo_path = (Path(path) / repo).resolve()
         print("""Bare repository successfully cloned into "{}" """.format(repo_path))
