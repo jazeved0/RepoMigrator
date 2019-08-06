@@ -2,7 +2,7 @@
 
 Short Python scripts that assist in repository migration between Github.com and Github Enterprise. The repository contains two different scripts: `migrate.py`, the main script, and `batch.py` a helper wrapper script that assists with repeated migration. I originally made these scripts to help move 10 or so of my private repositories on my school's Github Enterprise to private repos on Github.com, and I've uploaded them in case they help anyone else.
 
-## Usage
+## 📤 Usage
 
 ### `migrate.py`
 
@@ -56,7 +56,7 @@ optional arguments:
   --timeout ms         max amount of time to wait between command parses
 ```
 
-## Dependencies
+## 🔗 Dependencies
 
 The scripts have only been tested on Python 3.6 and depend on the following dependency, installable with `pip install <name>`:
 
